@@ -27,9 +27,23 @@ class GlobalIndex1(GlobalSecondaryIndex):
 
     class Meta:
         index_name = "GS1-Index-local"
-        # host = "http://{}:{}".format(
-        #     os.environ["SLS_OFF_HOST"], os.environ["DYNAMODB_PORT"]
-        # )
+        region = os.environ["AWS_DEFAULT_REGION"]
+        read_capacity_units = 2
+        write_capacity_units = 1
+        # All attributes are projected
+        projection = AllProjection()
+
+    gs1_pk = UnicodeAttribute(hash_key=True, attr_name="GS1PK")
+    gs1_sk = UnicodeAttribute(range_key=True, attr_name="GS1SK")
+
+
+class GlobalIndex2(GlobalSecondaryIndex):
+    """
+    This class represents the global secondary index
+    """
+
+    class Meta:
+        index_name = "GS1-Index-local"
         region = os.environ["AWS_DEFAULT_REGION"]
         read_capacity_units = 2
         write_capacity_units = 1
@@ -51,6 +65,7 @@ class Stimulus(Model):
     sk = UnicodeAttribute(range_key=True, attr_name="SK")
 
     gs1 = GlobalIndex1()
+    # gs1 = GlobalIndex2()
     gs1_pk = UnicodeAttribute(attr_name="GS1PK")
     gs1_sk = UnicodeAttribute(attr_name="GS1SK")
 
